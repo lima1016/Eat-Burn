@@ -9,10 +9,10 @@ app = Flask(__name__)
 CORS(app)  # 모든 도메인 허용
 
 # Azure Custom Vision API 정보
-PREDICTION_KEY = "6XRfesg0Ka3EwuWvdx1MuMY9gGij25QJP3eoMKC7OGPQOtl9EojMJQQJ99BBACi0881XJ3w3AAAIACOGENeY"
-PROJECT_ID = "bacf31b3-a6f7-40fd-8357-23aace5429cd"
+PREDICTION_KEY = ""
+PROJECT_ID = ""
 ITERATION_NAME = "Iteration2"
-ENDPOINT = "https://foodnamepredict-prediction.cognitiveservices.azure.com"
+ENDPOINT = ""
 PREDICTION_URL = f"{ENDPOINT}/customvision/v3.0/Prediction/{PROJECT_ID}/classify/iterations/{ITERATION_NAME}/image"
 
 # CSV 파일 경로 설정

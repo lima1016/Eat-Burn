@@ -5,27 +5,16 @@ function App() {
   const [selectedFile, setSelectedFile] = useState(null);
   const [predictionResult, setPredictionResult] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [dragActive, setDragActive] = useState(false);
+  const [imageUrl, setImageUrl] = useState(null);
 
   const handleFileChange = (e) => {
     setSelectedFile(e.target.files[0]);
-  };
 
-  const handleDrop = (e) => {
-    e.preventDefault();
-    setDragActive(false);
-    if (e.dataTransfer.files.length > 0) {
-      setSelectedFile(e.dataTransfer.files[0]);
-    }
-  };
-
-  const handleDragOver = (e) => {
-    e.preventDefault();
-    setDragActive(true);
-  };
-
-  const handleDragLeave = () => {
-    setDragActive(false);
+    const reader = new FileReader();
+    reader.onload = () => {
+      setImageUrl(reader.result);
+    };
+    reader.readAsDataURL(e.target.files[0]);
   };
 
   const handleSubmit = async (e) => {
@@ -82,6 +71,13 @@ function App() {
             </p>
           </div>
 
+          {/* 선택된 이미지 출력 */}
+          {imageUrl && (
+              <div className="image-preview">
+                <img src={imageUrl} alt="Uploaded" className="preview-image"/>
+              </div>
+          )}
+
           {/* 예측 버튼 */}
           <button className="upload-btn" onClick={handleSubmit}
                   disabled={loading}>
@@ -110,7 +106,6 @@ function App() {
                           ))}
                         </ul>
                       </>
-
                   ) : (
                       <p>운동 추천 정보가 없습니다.</p>
                   )}

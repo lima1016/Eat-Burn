@@ -37,51 +37,41 @@ def predict():
     response = requests.post(PREDICTION_URL, headers=headers, data=image_file.read())
     result = response.json()
 
-    # 예측 결과 확인
+    # 예측 결과 확인 (상위 3개 음식 반환)
     if "predictions" in result and len(result["predictions"]) > 0:
-        best_prediction = max(result["predictions"], key=lambda x: x["probability"])
-        predicted_tag = best_prediction["tagName"]
-        confidence_score = best_prediction["probability"] * 100
+        top_predictions = sorted(result["predictions"], key=lambda x: x["probability"], reverse=True)[:3]
+        predictions_list = []
 
-        # 음식의 칼로리 정보 찾기
         try:
             food_data = pd.read_csv(FOOD_DATA_PATH)
-        except Exception as e:
-            return jsonify({'error': f"음식 데이터 파일 로드 오류: {e}"}), 500
-
-        matched_row = food_data[food_data['통합_식품명'] == predicted_tag]
-        if not matched_row.empty:
-            input_calories = matched_row.iloc[0]['1인당Cal']  # 칼로리 값 가져오기
-        else:
-            input_calories = "데이터 없음"
-
-        # 운동 데이터 로드
-        try:
             exercise_data = pd.read_csv(EXERCISE_DATA_PATH)
         except Exception as e:
-            return jsonify({'error': f"운동 데이터 파일 로드 오류: {e}"}), 500
+            return jsonify({'error': f"데이터 파일 로드 오류: {e}"}), 500
 
-        # 운동 데이터에서 상위 5개 운동 추천
-        if input_calories == "데이터 없음":
-            return jsonify({
+        for prediction in top_predictions:
+            predicted_tag = prediction["tagName"]
+            confidence_score = prediction["probability"] * 100
+
+            matched_row = food_data[food_data['통합_식품명'] == predicted_tag]
+            input_calories = matched_row.iloc[0]['1인당Cal'] if not matched_row.empty else "데이터 없음"
+
+            if input_calories != "데이터 없음":
+                exercise_data['운동시간(분)'] = input_calories / exercise_data['칼로리(1분)']
+                top_exercises = exercise_data[['운동이름', '운동시간(분)']].sort_values(by='운동시간(분)').head(5).to_dict(orient='records')
+            else:
+                top_exercises = '운동 데이터 없음'
+
+            predictions_list.append({
                 'food_name': predicted_tag,
                 'confidence': round(confidence_score, 2),
                 'calories': input_calories,
-                'exercise': '운동 데이터 없음'
+                'exercise': top_exercises
             })
-        else:
-            exercise_data = exercise_data[['운동이름', '칼로리(1분)', '종류']]
-            exercise_data['운동시간(분)'] = input_calories / exercise_data['칼로리(1분)']
-            top_exercises = exercise_data[['운동이름', '운동시간(분)']].sort_values(by='운동시간(분)').head(5)
 
-            return jsonify({
-                'food_name': predicted_tag,
-                'confidence': round(confidence_score, 2),
-                'calories': input_calories,
-                'exercise': top_exercises.to_dict(orient='records')
-            })
+        return jsonify({'predictions': predictions_list})
     else:
         return jsonify({'error': '예측 결과를 찾을 수 없습니다.'}), 500
+
 
 
 if __name__ == '__main__':

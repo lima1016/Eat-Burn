@@ -162,3 +162,24 @@ strong {
   border-radius: 10px;  /* 둥근 테두리 */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);  /* 그림자 효과 */
 }
+.custom-dropdown {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: 2px solid #4CAF50;
+  background-color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.custom-dropdown:hover {
+  background-color: #f0f8ff;
+}
+
+.custom-dropdown:focus {
+  outline: none;
+  border-color: #2e8b57;
+  box-shadow: 0px 0px 8px rgba(46, 139, 87, 0.5);
+}

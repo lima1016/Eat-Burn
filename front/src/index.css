@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 추가적인 글로벌 스타일 */
+body {
+  @apply bg-gray-100 text-gray-900;
+}
+
+.container {
+  @apply max-w-3xl mx-auto p-6 bg-white shadow-lg rounded-lg;
+}
+
+.button {
+  @apply bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition;
+}

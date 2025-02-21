@@ -5,7 +5,8 @@
 이 프로젝트는 사용자가 음식 이미지를 업로드하면, 이미지에서 음식 이름을 예측하고, 해당 음식의 칼로리 정보를 기반으로 소모할 수 있는 운동을 추천하는 시스템입니다. 
 이 시스템은 Azure Custom Vision을 사용하여 이미지 분석을 수행하고, Flask를 이용한 서버와 React를 사용한 프로젝트입니다.
 
-<img width="877" alt="image" src="https://github.com/user-attachments/assets/d2d637fb-705c-437c-add4-557dc4f09cca" />
+<img width="871" alt="image" src="https://github.com/user-attachments/assets/c7a9b97b-f776-46b7-bcd2-48840107c95c" />
+
 
 ## 📋 프로젝트 개요
 운동 추천은 사용자가 업로드한 음식 사진을 분석하여 음식의 영양 정보를 제공하고, 사용자의 신체 정보(성별, 나이, 체중, 키)를 기반으로 기초대사량(BMR)을 계산한 뒤, 섭취 칼로리를 소모할 수 있는 맞춤 운동을 추천하는 웹 애플리케이션입니다. Azure Custom Vision API로 음식을 인식하고, LLM을 활용해 추가적인 영양 정보를 제공하며, k-최근접 이웃(KNN) 알고리즘으로 사용자 맞춤 운동을 제안합니다.

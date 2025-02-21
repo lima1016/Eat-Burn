@@ -22,7 +22,53 @@ body {
   justify-content: center;
   gap: 20px;
   width: 100%;
-  max-width: 450px;
+  max-width: 900px;
+}
+
+/* Flexbox로 좌우 배치 */
+.app-wrapper {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  gap: 20px;
+}
+
+/* 왼쪽 열 */
+.main-content {
+  flex: 1;
+  width: 100%;
+}
+
+/* 오른쪽 열: LLM 출력 */
+.llm-panel {
+  flex: 1;
+  background: white;
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  width: 100%;
+  height: auto; /* 고정 높이 제거, 텍스트에 맞게 조정 */
+  min-height: 100px; /* 최소 높이 설정 */
+  max-height: 300px; /* 최대 높이 제한 (필요 시 조정) */
+  overflow-y: auto; /* 텍스트가 길어지면 스크롤 */
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* 세로 가운데 정렬 */
+}
+
+.llm-panel h3 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #4c50b6;
+  margin-bottom: 10px;
+}
+
+.llm-panel p {
+  font-size: 14px;
+  color: #333;
+  margin: 0; /* 기본 여백 제거 */
+  word-wrap: break-word; /* 긴 단어 줄바꿈 */
 }
 
 /* 카드 스타일 */
@@ -35,6 +81,7 @@ body {
   width: 100%;
 }
 
+/* 나머지 스타일은 그대로 유지 */
 .card h1 {
   font-size: 24px;
   font-weight: 600;
@@ -42,7 +89,6 @@ body {
   margin-bottom: 15px;
 }
 
-/* 파일 선택 컨테이너 */
 .file-container {
   display: flex;
   align-items: center;
@@ -53,12 +99,11 @@ body {
   width: 100%;
 }
 
-/* 파일 선택 버튼 */
 .custom-file-upload {
   border: 2px solid #4c50b6;
   color: #4c50b6;
-  padding: 6px 12px; /* 기존보다 줄임 */
-  font-size: 13px; /* 폰트 크기 줄임 */
+  padding: 6px 12px;
+  font-size: 13px;
   border-radius: 6px;
   cursor: pointer;
   background: transparent;
@@ -79,13 +124,12 @@ body {
   color: #333;
 }
 
-/* 업로드 버튼 */
 .upload-btn {
   border: 2px solid #4c50b6;
   color: #4c50b6;
   background: transparent;
-  padding: 8px 16px; /* 패딩을 줄임 */
-  font-size: 14px;   /* 글꼴 크기를 줄임 */
+  padding: 8px 16px;
+  font-size: 14px;
   border-radius: 8px;
   cursor: pointer;
   margin-top: 10px;
@@ -97,34 +141,33 @@ body {
   color: white;
 }
 
-/* 추천 운동 스타일 */
 ul {
-  list-style-type: none; /* 기본 불릿(•) 없애기 */
-  padding: 0; /* 기본 여백 제거 */
+  list-style-type: none;
+  padding: 0;
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 12px; /* 항목 간 간격 */
+  gap: 12px;
 }
 
 li {
-  padding: 12px 16px; /* 패딩 추가 */
-  background-color: #f0f4f8; /* 부드러운 배경색 */
-  border-radius: 8px; /* 둥근 모서리 */
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* 부드러운 그림자 */
-  font-size: 16px; /* 글꼴 크기 조정 */
+  padding: 12px 16px;
+  background-color: #f0f4f8;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  font-size: 16px;
   display: flex;
-  justify-content: space-between; /* 항목의 운동 이름과 시간 사이 간격 */
-  align-items: center; /* 세로 가운데 정렬 */
-  transition: background-color 0.3s ease; /* 마우스 오버 시 색 변화 효과 */
+  justify-content: space-between;
+  align-items: center;
+  transition: background-color 0.3s ease;
 }
 
 li:hover {
-  background-color: #e1e8ed; /* 마우스 오버 시 배경색 변화 */
+  background-color: #e1e8ed;
 }
 
 strong {
-  font-weight: bold; /* 운동 이름에 강조 효과 */
+  font-weight: bold;
 }
 
 .image-preview {
@@ -134,15 +177,16 @@ strong {
 }
 
 .preview-image {
-  max-width: 100%;  /* 컨테이너 크기에 맞게 조정 */
-  height: auto;  /* 가로 비율 유지 */
-  border-radius: 10px;  /* 둥근 테두리 */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);  /* 그림자 효과 */
+  max-width: 100%;
+  height: auto;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
+
 .custom-dropdown {
   width: 100%;
-  padding: 10px; /* 기존 12px에서 줄임 */
-  font-size: 14px; /* 기존 16px에서 줄임 */
+  padding: 10px;
+  font-size: 14px;
   border-radius: 8px;
   border: 2px solid #4CAF50;
   background-color: white;

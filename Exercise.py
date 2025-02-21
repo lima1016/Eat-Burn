@@ -6,9 +6,14 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from sklearn.neighbors import NearestNeighbors
 import logging
+from dotenv import load_dotenv
+from openai import OpenAI
 
 app = Flask(__name__)
 CORS(app)
+
+# 환경 변수 로드
+load_dotenv()
 
 # 로깅 설정
 logging.basicConfig(
@@ -28,6 +33,12 @@ FOOD_DATA_PATH = "250220 kfood_rev1.csv"
 EXERCISE_DATA_PATH = "250220 exercise.csv"
 TRACKING_DATA_PATH = "운동_gym_members_exercise_tracking.csv"
 
+# Novita AI OpenAI 클라이언트 설정
+client = OpenAI(
+    base_url="https://api.novita.ai/v3/openai",
+    api_key="<API-KEY>",
+)
+
 # 기초대사량(BMR) 계산 함수
 def calculate_bmr(gender, age, weight, height):
     if gender == "남성":
@@ -42,22 +53,64 @@ def train_exercise_recommendation_model(tracking_data):
     model = NearestNeighbors(n_neighbors=5, algorithm='auto').fit(features)
     return model, features
 
-# 사용자 정보 기반 운동 추천 (tracking_data 추가)
+# 사용자 정보 기반 운동 추천
 def recommend_exercises(model, features, user_data, exercise_data, tracking_data, calories_to_burn, weight):
     gender_numeric = 1 if user_data['gender'] == "남성" else 0
     user_features = pd.DataFrame([[gender_numeric, user_data['age'], user_data['weight'], user_data['height']]],
                                  columns=['Gender_numeric', 'Age', 'Weight', 'Height'])
     distances, indices = model.kneighbors(user_features)
-
-    # 비슷한 사용자 데이터 추출
     similar_users = tracking_data.iloc[indices[0]]
-
-    # 추천 운동 필터링 (tracking_data에 '운동이름'이 없으므로 '종류'를 사용)
     recommended = exercise_data[exercise_data['종류'].isin(similar_users['종류'].unique())].copy()
-
-    # 칼로리 소모량에 따른 운동 시간 계산
     recommended['운동시간(분)'] = (calories_to_burn / recommended['칼로리(1분)']) * (weight / 70)
     return recommended[['운동이름', '운동시간(분)', '종류']].sort_values(by='운동시간(분)').head(5).to_dict(orient='records')
+
+# LLM 호출 함수
+def get_llm_response(food_name):
+    try:
+        model = "mistralai/mistral-nemo"
+        stream = False
+        max_tokens = 1000
+        system_content = "Be a helpful assistant"
+        temperature = 0.5
+        top_p = 0.5
+        min_p = 0
+        top_k = 50
+        presence_penalty = 0
+        frequency_penalty = 0
+        repetition_penalty = 1
+        response_format = {"type": "text"}
+
+        prompt = (
+            f"음식 이름: {food_name}. "
+            "이 음식의 영양소 정보 및 관련 정보를 한국어로만 간단하게 제공하세요. "
+            "단백질(g), 지방(g), 탄소화물(g) 등의 영양소를 포함하고, "
+            "대략적인 1인분 기준으로 추정해서 설명해주세요. "
+            "칼로리 정보는 이미 포함되어 있으니 제외하는데, 이 부분에 대해 얘기하지 마세요."
+        )
+
+        chat_completion_res = client.chat.completions.create(
+            model=model,
+            messages=[
+                {"role": "system", "content": system_content},
+                {"role": "user", "content": prompt},
+            ],
+            stream=stream,
+            max_tokens=max_tokens,
+            temperature=temperature,
+            top_p=top_p,
+            presence_penalty=presence_penalty,
+            frequency_penalty=frequency_penalty,
+            response_format=response_format,
+            extra_body={
+                "top_k": top_k,
+                "repetition_penalty": repetition_penalty,
+                "min_p": min_p
+            }
+        )
+
+        return chat_completion_res.choices[0].message.content
+    except Exception as e:
+        return f"LLM 호출 오류: {str(e)}"
 
 @app.route('/predict', methods=['POST'])
 def predict():
@@ -136,17 +189,20 @@ def predict():
 
         if input_calories != "데이터 없음":
             user_data = {'gender': gender, 'age': age, 'weight': weight, 'height': height}
-            # tracking_data 전달
             recommended_exercises = recommend_exercises(model, features, user_data, exercise_data, tracking_data, input_calories, weight)
         else:
             recommended_exercises = '운동 데이터 없음'
+
+        # 각 음식에 대해 LLM 응답 호출
+        llm_response = get_llm_response(predicted_tag)
 
         predictions_list.append({
             'food_name': predicted_tag,
             'confidence': round(confidence_score, 2),
             'calories': input_calories,
             'bmr': round(bmr, 2),
-            'exercise': recommended_exercises
+            'exercise': recommended_exercises,
+            'llmResponse': llm_response  # 개별 LLM 응답 추가
         })
 
     logging.info("요청 처리 완료")

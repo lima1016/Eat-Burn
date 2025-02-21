@@ -2,9 +2,6 @@
 
 운동과 식단 관리를 한 번에! 이미지 업로드로 음식 분석과 맞춤 운동 추천을 받아보세요.
 
-이 프로젝트는 사용자가 음식 이미지를 업로드하면, 이미지에서 음식 이름을 예측하고, 해당 음식의 칼로리 정보를 기반으로 소모할 수 있는 운동을 추천하는 시스템입니다. 
-이 시스템은 Azure Custom Vision을 사용하여 이미지 분석을 수행하고, Flask를 이용한 서버와 React를 사용한 프로젝트입니다.
-
 <img width="1591" alt="image" src="https://github.com/user-attachments/assets/e4f0f4b4-ec21-4233-83ce-1238a482a9df" />
 
 

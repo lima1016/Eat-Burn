@@ -27,7 +27,7 @@ EXERCISE_DATA_PATH = "250220 exercise.csv"
 # Novita AI OpenAI 클라이언트 설정
 client = OpenAI(
     base_url="https://api.novita.ai/v3/openai",
-    api_key="sk_hqCl9DatJGKw8d2Yw2taR8eKJAwZhFTlgeBjPNS_0Kk",
+    api_key="<Novita API Key>",
 )
 
 # 기초대사량(BMR) 계산 함수

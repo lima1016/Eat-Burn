@@ -59,13 +59,46 @@ function App() {
     }
   };
 
+  // LLM 응답에서 "g"가 포함된 마지막 위치를 기준으로 영양소 정보와 추가 정보를 분리하는 함수
+  const splitLLMResponse = (llmResponse) => {
+    if (!llmResponse) return { nutrients: "", additional: "" };
+
+    let nutrients = "";
+    let additional = "";
+
+    // 텍스트에서 "g"가 포함된 마지막 위치 찾기
+    const lastGIndex = llmResponse.lastIndexOf("g");
+    if (lastGIndex !== -1) {
+      // "g" 뒤의 텍스트를 추가 정보로, 앞의 텍스트를 영양소 정보로 분리
+      nutrients = llmResponse.substring(0, lastGIndex + 1).trim(); // "g"까지 포함
+      additional = llmResponse.substring(lastGIndex + 1).trim(); // "g" 뒤의 텍스트
+    } else {
+      // "g"가 없는 경우, 전체를 영양소 정보로 간주
+      nutrients = llmResponse;
+    }
+
+    return { nutrients, additional };
+  };
+
+  // 영양소 정보를 파싱하여 리스트로 변환
+  const parseNutrients = (nutrientsText) => {
+    if (!nutrientsText) return [];
+
+    // 영양소 텍스트에서 단백질, 지방, 탄수화물 추출
+    const nutrientLines = nutrientsText.split("\n").filter(line => line.includes(":"));
+    return nutrientLines.map(line => {
+      const [name, value] = line.split(": ").map(part => part.trim());
+      return { name, value };
+    });
+  };
+
   return (
     <div className="container">
       {!userData ? (
         <UserInputForm onSubmit={handleUserDataSubmit} />
       ) : (
         <div className="app-wrapper">
-          {/* 왼쪽 열 */}
+          {/* 왼쪽 열: 메인 콘텐츠 */}
           <div className="main-content">
             <div className="card">
               <h1>
@@ -164,13 +197,52 @@ function App() {
             </div>
           </div>
 
-          {/* 오른쪽 열: LLM 출력 */}
+          {/* 오른쪽 열: 사용자 정보와 LLM 출력 (음식 선택 시만 표시) */}
           {selectedFood && (
-            <div className="llm-panel">
-              <h3>🤖 LLM 응답</h3>
-              <p>
-                {predictionResults.find((item) => item.food_name === selectedFood)?.llmResponse || "LLM 응답 없음"}
-              </p>
+            <div className="info-section">
+              {/* 사용자 정보 패널 */}
+              <div className="user-panel">
+                <h3>👤 사용자 정보</h3>
+                <div className="user-info">
+                  <p><strong>성별:</strong> {userData.gender}</p>
+                  <p><strong>나이:</strong> {userData.age}세</p>
+                  <p><strong>체중:</strong> {userData.weight}kg</p>
+                  <p><strong>키:</strong> {userData.height}cm</p>
+                  <p><strong>BMR:</strong> {predictionResults.find(item => item.food_name === selectedFood)?.bmr || "N/A"} kcal</p>
+                </div>
+              </div>
+
+              {/* LLM 출력 패널 */}
+              <div className="llm-panel">
+                <h3>🤖 LLM 응답</h3>
+                <div className="llm-response">
+                  {/* 영양소 정보 (리스트로 표시) */}
+                  <div className="llm-nutrients">
+                    <h4>🍴 영양소 정보</h4>
+                    <div className="nutrient-table">
+                      {parseNutrients(
+                        splitLLMResponse(
+                          predictionResults.find((item) => item.food_name === selectedFood)?.llmResponse
+                        )?.nutrients
+                      ).map((nutrient, index) => (
+                        <div key={index} className="nutrient-row">
+                          <span className="nutrient-name">{nutrient.name}</span>
+                          <span className="nutrient-value">{nutrient.value}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  {/* 추가 정보 */}
+                  <div className="llm-additional">
+                    <h4>📋 추가 정보</h4>
+                    <p>
+                      {splitLLMResponse(
+                        predictionResults.find((item) => item.food_name === selectedFood)?.llmResponse
+                      )?.additional || "추가 정보 없음"}
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
           )}
         </div>

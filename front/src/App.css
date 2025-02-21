@@ -39,7 +39,55 @@ body {
   width: 100%;
 }
 
-/* 오른쪽 열: LLM 출력 */
+/* 오른쪽 열: 사용자 정보와 LLM 출력 섹션 */
+.info-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+}
+
+/* 사용자 정보 패널 */
+.user-panel {
+  background: white;
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  width: 100%;
+  height: auto; /* 내용에 맞게 자동 조정 */
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* 세로 가운데 정렬 */
+}
+
+.user-panel h3 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #4c50b6;
+  margin-bottom: 10px;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.user-info p {
+  font-size: 14px;
+  color: #333;
+  margin: 0;
+  line-height: 1.6;
+}
+
+.user-info strong {
+  color: #2c3e50;
+  font-weight: 600;
+}
+
+/* LLM 출력 패널 */
 .llm-panel {
   flex: 1;
   background: white;
@@ -48,10 +96,7 @@ body {
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
   text-align: center;
   width: 100%;
-  height: auto; /* 고정 높이 제거, 텍스트에 맞게 조정 */
-  min-height: 100px; /* 최소 높이 설정 */
-  max-height: 300px; /* 최대 높이 제한 (필요 시 조정) */
-  overflow-y: auto; /* 텍스트가 길어지면 스크롤 */
+  height: auto; /* 내용에 맞게 자동 조정 */
   display: flex;
   flex-direction: column;
   justify-content: center; /* 세로 가운데 정렬 */
@@ -64,11 +109,61 @@ body {
   margin-bottom: 10px;
 }
 
-.llm-panel p {
+.llm-response {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.llm-nutrients, .llm-additional {
+  background-color: #fff;
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+}
+
+.llm-nutrients h4, .llm-additional h4 {
+  color: #2c3e50;
+  margin-bottom: 10px;
+  font-size: 1.1em;
+}
+
+.llm-nutrients p, .llm-additional p {
+  color: #333;
+  line-height: 1.6;
+  font-size: 0.9em;
+}
+
+.nutrient-table {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+}
+
+.nutrient-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background-color: white;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   font-size: 14px;
   color: #333;
-  margin: 0; /* 기본 여백 제거 */
-  word-wrap: break-word; /* 긴 단어 줄바꿈 */
+}
+
+.nutrient-name {
+  font-weight: 500;
+  color: #2c3e50;
+}
+
+.nutrient-value {
+  font-weight: 600;
+  color: #4c50b6;
 }
 
 /* 카드 스타일 */
@@ -203,4 +298,28 @@ strong {
   outline: none;
   border-color: #2e8b57;
   box-shadow: 0px 0px 8px rgba(46, 139, 87, 0.5);
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .app-wrapper {
+    flex-direction: column;
+  }
+
+  .info-section {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .user-panel, .llm-panel {
+    margin-left: 0;
+    margin-top: 15px;
+    max-width: 100%;
+  }
+
+  .nutrient-row {
+    flex-direction: column;
+    text-align: center;
+    gap: 5px;
+  }
 }

@@ -1,30 +1,48 @@
-# Eat-Burn
-"Eat &amp; Burn: K-Food Edition" 🔥🍚💪
+# Eat &amp; Burn: K-Food Edition 🔥🍚💪
+
+운동과 식단 관리를 한 번에! 이미지 업로드로 음식 분석과 맞춤 운동 추천을 받아보세요.
+
 이 프로젝트는 사용자가 음식 이미지를 업로드하면, 이미지에서 음식 이름을 예측하고, 해당 음식의 칼로리 정보를 기반으로 소모할 수 있는 운동을 추천하는 시스템입니다. 
 이 시스템은 Azure Custom Vision을 사용하여 이미지 분석을 수행하고, Flask를 이용한 서버와 React를 사용한 프로젝트입니다.
 
-<img width="392" alt="image" src="https://github.com/user-attachments/assets/5418ab62-7f13-443d-a213-dbb0bd3fd3ab" />
+<img width="877" alt="image" src="https://github.com/user-attachments/assets/d2d637fb-705c-437c-add4-557dc4f09cca" />
 
-## 기능
+## 📋 프로젝트 개요
+운동 추천은 사용자가 업로드한 음식 사진을 분석하여 음식의 영양 정보를 제공하고, 사용자의 신체 정보(성별, 나이, 체중, 키)를 기반으로 기초대사량(BMR)을 계산한 뒤, 섭취 칼로리를 소모할 수 있는 맞춤 운동을 추천하는 웹 애플리케이션입니다. Azure Custom Vision API로 음식을 인식하고, LLM을 활용해 추가적인 영양 정보를 제공하며, k-최근접 이웃(KNN) 알고리즘으로 사용자 맞춤 운동을 제안합니다.
 
-- 음식 이미지 업로드 및 분석: 사용자가 업로드한 음식 이미지를 Azure Custom Vision API로 분석하여 음식 이름을 예측합니다.
-- 칼로리 기반 운동 추천: 예측된 음식에 해당하는 칼로리 데이터를 사용하여, 사용자가 소모할 수 있는 운동을 추천합니다.
-- 실시간 피드백: 사용자는 이미지를 업로드하고, 실시간으로 예측된 음식과 운동을 확인할 수 있습니다.
+## ✨ 주요 기능
+음식 인식: Azure Custom Vision API를 활용해 업로드된 이미지에서 음식을 예측하고, 상위 3개의 결과를 제공합니다.
+칼로리 및 영양 정보: 예측된 음식의 칼로리와 LLM(예: Mistral Nemo)을 통해 단백질, 지방, 탄수화물 등 영양소 정보를 제공합니다.
+기초대사량 계산: 사용자의 성별, 나이, 체중, 키를 입력받아 BMR을 계산합니다.
+운동 추천: KNN 기반 추천 시스템으로, 섭취 칼로리를 소모할 수 있는 운동과 필요한 운동 시간을 제안합니다.
+직관적인 UI: React 기반 프론트엔드로 이미지 업로드, 결과 선택, LLM 응답 확인이 가능합니다.
 
-## 기술 스택
+## 🛠️ 기술 스택
+### 백엔드
+- 언어: Python
+- 프레임워크: Flask
+-AI/ML:
+  - Azure Custom Vision API (음식 이미지 분류)
+  - Scikit-learn (KNN 기반 운동 추천)
+- LLM: Novita AI OpenAI 클라이언트 (Mistral Nemo 모델)
+- 데이터: CSV 파일 (음식 데이터, 운동 데이터, 사용자 추적 데이터)
+### 프론트엔드
+- 언어: JavaScript
+- 프레임워크: React
+- 스타일링: CSS
+- 기타: Flask-CORS (크로스 오리진 요청 처리)
 
-### 백엔드 (Server)
-- **Flask**: Python 기반의 웹 프레임워크, API 서버 구축
-- **Azure Custom Vision API**: 이미지 분석을 위한 클라우드 기반 서비스
-- **Pandas**: CSV 파일을 처리하고, 칼로리 데이터를 관리하는 라이브러리
-- **Torch**: 데이터 분석 및 모델링에 사용된 라이브러리
+## 📚 데이터셋
+- 250220 kfood_rev1.csv: 음식 이름과 1인분 칼로리 데이터
+- 250220 exercise.csv: 운동 이름, 종류, 1분당 칼로리 소모량
+- 운동_gym_members_exercise_tracking.csv: 사용자 운동 추적 데이터 (성별, 나이, 체중, 키 등)
 
-### 프론트엔드 (Client)
-- **React**: JavaScript 라이브러리, UI 구성
-- **CSS**: 페이지 스타일링을 위한 스타일시트
-- **Fetch API**: 서버와 통신하여 이미지 업로드 및 예측 결과 받기
 
 ## 프로젝트 실행 방법
+- 언어: JavaScript
+- 프레임워크: React
+- 스타일링: CSS
+- 기타: Flask-CORS (크로스 오리진 요청 처리)
 
 ### 1. 서버 실행 (백엔드)
 서버는 Flask로 구현되어 있으며, Python 환경에서 실행됩니다.

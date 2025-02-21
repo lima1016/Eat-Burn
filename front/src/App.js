@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import UserInputForm from "./UserInputForm";
 import "./App.css";
 
@@ -9,6 +9,7 @@ function App() {
   const [selectedFood, setSelectedFood] = useState("");
   const [imageUrl, setImageUrl] = useState(null);
   const [userData, setUserData] = useState(null);
+  const [llmText, setLlmText] = useState("");
 
   const handleUserDataSubmit = (data) => {
     setUserData(data);
@@ -16,7 +17,6 @@ function App() {
 
   const handleFileChange = (e) => {
     setSelectedFile(e.target.files[0]);
-
     const reader = new FileReader();
     reader.onload = () => {
       setImageUrl(reader.result);
@@ -49,6 +49,7 @@ function App() {
       if (response.ok) {
         setPredictionResults(data.predictions);
         setSelectedFood("");
+        setLlmText(data.llmResponse || "LLM이 생성한 텍스트입니다.");
       } else {
         alert(data.error || "예측 요청 실패");
       }
@@ -61,82 +62,118 @@ function App() {
   };
 
   return (
-      <div className="container">
-        {/* 사용자가 정보를 입력하지 않았다면 UserInputForm을 먼저 보여줌 */}
-        {!userData ? (
-            <UserInputForm onSubmit={handleUserDataSubmit}/>
-        ) : (
+    <div className="container">
+      {!userData ? (
+        <UserInputForm onSubmit={handleUserDataSubmit} />
+      ) : (
+        <div className="app-wrapper">
+          {/* 왼쪽 열 */}
+          <div className="main-content">
             <div className="card">
               <h1>
                 <strong>eteam</strong> 운동 추천🏃‍♀️‍➡️
               </h1>
-
               <div className="file-container">
                 <label className="custom-file-upload">
                   파일 선택
-                  <input type="file" onChange={handleFileChange}
-                         accept="image/*" className="file-input"/>
+                  <input
+                    type="file"
+                    onChange={handleFileChange}
+                    accept="image/*"
+                    className="file-input"
+                  />
                 </label>
-                <p className="file-name">{selectedFile
-                    ? `📂 ${selectedFile.name}` : "선택된 파일 없음"}</p>
+                <p className="file-name">
+                  {selectedFile ? `📂 ${selectedFile.name}` : "선택된 파일 없음"}
+                </p>
               </div>
 
               {imageUrl && (
-                  <div className="image-preview">
-                    <img src={imageUrl} alt="Uploaded"
-                         className="preview-image"/>
-                  </div>
+                <div className="image-preview">
+                  <img src={imageUrl} alt="Uploaded" className="preview-image" />
+                </div>
               )}
 
-              <button className="upload-btn" onClick={handleSubmit}
-                      disabled={loading}>
+              <button
+                className="upload-btn"
+                onClick={handleSubmit}
+                disabled={loading}
+              >
                 {loading ? "처리 중..." : "이미지 업로드 & 예측"}
               </button>
 
               {predictionResults.length > 0 && (
-                  <div className="result-container">
-                    <h3>🔍 음식 선택</h3>
-                    <select className="custom-dropdown" value={selectedFood}
-                            onChange={(e) => setSelectedFood(e.target.value)}>
-                      <option value="">음식을 선택하세요</option>
-                      {predictionResults.map((item, index) => (
-                          <option key={index} value={item.food_name}>
-                            {item.food_name} ({item.confidence}%)
-                          </option>
-                      ))}
-                    </select>
+                <div className="result-container">
+                  <h3>🔍 음식 선택</h3>
+                  <select
+                    className="custom-dropdown"
+                    value={selectedFood}
+                    onChange={(e) => setSelectedFood(e.target.value)}
+                  >
+                    <option value="">음식을 선택하세요</option>
+                    {predictionResults.map((item, index) => (
+                      <option key={index} value={item.food_name}>
+                        {item.food_name} ({item.confidence}%)
+                      </option>
+                    ))}
+                  </select>
 
-                    {selectedFood && (
-                        <div className="food-details">
-                          <p>🍽 음식: <strong>{selectedFood}</strong></p>
-                          <p>🍏 칼로리: <strong>{predictionResults.find(
-                              item => item.food_name
-                                  === selectedFood)?.calories}</strong> kcal</p>
-                          <p>🔥 기초대사량 (BMR): <strong>{predictionResults.find(
-                              item => item.food_name
-                                  === selectedFood)?.bmr}</strong> kcal</p>
+                  {selectedFood && (
+                    <div className="food-details">
+                      <p>
+                        🍽 음식: <strong>{selectedFood}</strong>
+                      </p>
+                      <p>
+                        🍏 칼로리:{" "}
+                        <strong>
+                          {
+                            predictionResults.find(
+                              (item) => item.food_name === selectedFood
+                            )?.calories
+                          }
+                        </strong>{" "}
+                        kcal
+                      </p>
+                      <p>
+                        🔥 기초대사량 (BMR):{" "}
+                        <strong>
+                          {
+                            predictionResults.find(
+                              (item) => item.food_name === selectedFood
+                            )?.bmr
+                          }
+                        </strong>{" "}
+                        kcal
+                      </p>
 
-                          <div className="exercise-list">
-                            <h3>💪 사용자 맞춤 운동 추천</h3>
-                            <ul>
-                              {predictionResults.find(item => item.food_name
-                                  === selectedFood)?.exercise.map(
-                                  (exercise, index) => (
-                                      <li key={index}>
-                                        <strong>{exercise.운동이름}</strong> {exercise["운동시간(분)"].toFixed(
-                                          1)} 분
-                                      </li>
-                                  ))}
-                            </ul>
-                          </div>
-                        </div>
-                    )}
-
-                  </div>
+                      <div className="exercise-list">
+                        <h3>💪 사용자 맞춤 운동 추천</h3>
+                        <ul>
+                          {predictionResults
+                            .find((item) => item.food_name === selectedFood)
+                            ?.exercise.map((exercise, index) => (
+                              <li key={index}>
+                                <strong>{exercise.운동이름}</strong>{" "}
+                                {exercise["운동시간(분)"].toFixed(1)} 분
+                              </li>
+                            ))}
+                        </ul>
+                      </div>
+                    </div>
+                  )}
+                </div>
               )}
             </div>
-        )}
-      </div>
+          </div>
+
+          {/* 오른쪽 열: LLM 출력 */}
+          <div className="llm-panel">
+            <h3>🤖 LLM 응답</h3>
+            <p>{llmText || "아직 LLM 응답이 없습니다."}</p>
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
 

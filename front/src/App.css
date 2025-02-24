@@ -23,6 +23,8 @@ body {
   gap: 20px;
   width: 100%;
   max-width: 900px;
+  opacity: 0;
+  animation: fadeIn 0.5s ease-in forwards;
 }
 
 /* Flexbox로 좌우 배치 */
@@ -37,6 +39,9 @@ body {
 .main-content {
   flex: 1;
   width: 100%;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: slideUp 0.6s ease-out 0.2s forwards;
 }
 
 /* 오른쪽 열: 사용자 정보와 LLM 출력 섹션 */
@@ -46,6 +51,9 @@ body {
   flex-direction: column;
   gap: 20px;
   width: 100%;
+  opacity: 0;
+  transform: translateX(20px);
+  animation: slideInRight 0.6s ease-out 0.4s forwards;
 }
 
 /* 사용자 정보 패널 */
@@ -56,10 +64,10 @@ body {
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
   text-align: center;
   width: 100%;
-  height: auto; /* 내용에 맞게 자동 조정 */
+  height: auto;
   display: flex;
   flex-direction: column;
-  justify-content: center; /* 세로 가운데 정렬 */
+  justify-content: center;
 }
 
 .user-panel h3 {
@@ -96,10 +104,10 @@ body {
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
   text-align: center;
   width: 100%;
-  height: auto; /* 내용에 맞게 자동 조정 */
+  height: auto;
   display: flex;
   flex-direction: column;
-  justify-content: center; /* 세로 가운데 정렬 */
+  justify-content: center;
 }
 
 .llm-panel h3 {
@@ -120,6 +128,8 @@ body {
   padding: 15px;
   border-radius: 8px;
   border: 1px solid #e0e0e0;
+  opacity: 0;
+  animation: fadeIn 0.5s ease-in 0.6s forwards;
 }
 
 .llm-nutrients h4, .llm-additional h4 {
@@ -154,6 +164,8 @@ body {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   font-size: 14px;
   color: #333;
+  transform: scale(0.95);
+  animation: scaleUp 0.4s ease-out forwards;
 }
 
 .nutrient-name {
@@ -176,7 +188,6 @@ body {
   width: 100%;
 }
 
-/* 나머지 스타일은 그대로 유지 */
 .card h1 {
   font-size: 24px;
   font-weight: 600;
@@ -228,12 +239,18 @@ body {
   border-radius: 8px;
   cursor: pointer;
   margin-top: 10px;
-  transition: 0.3s;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .upload-btn:hover {
   background: #4c50b6;
   color: white;
+  transform: scale(1.05);
+}
+
+.upload-btn:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
 }
 
 ul {
@@ -254,11 +271,12 @@ li {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 li:hover {
   background-color: #e1e8ed;
+  transform: translateY(-2px);
 }
 
 strong {
@@ -276,6 +294,7 @@ strong {
   height: auto;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  animation: fadeIn 0.5s ease-in;
 }
 
 .custom-dropdown {
@@ -300,10 +319,74 @@ strong {
   box-shadow: 0px 0px 8px rgba(46, 139, 87, 0.5);
 }
 
+/* 결과 컨테이너 애니메이션 */
+.result-container {
+  margin-top: 20px;
+  opacity: 0;
+  animation: fadeIn 0.5s ease-in 0.6s forwards;
+}
+
+/* 음식 세부 정보와 운동 리스트 */
+.food-details, .exercise-list {
+  margin-top: 15px;
+  opacity: 0;
+  transform: scale(0.95);
+  animation: scaleUp 0.4s ease-out 0.8s forwards;
+}
+
+/* 키프레임 애니메이션 정의 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleUp {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 /* 반응형 디자인 */
 @media (max-width: 768px) {
   .app-wrapper {
     flex-direction: column;
+  }
+
+  .main-content, .info-section {
+    animation: none;
+    opacity: 1;
+    transform: none;
   }
 
   .info-section {

@@ -19,6 +19,9 @@ const UserInputForm = ({ onSubmit }) => {
   return (
     <div className="user-form-container">
       <h2>사용자 정보 입력</h2>
+      <p className="disclaimer">
+        본 서비스는 정보 제공 및 일반적인 건강 관리 도구로 제공되며, 정식 의료서비스 또는 전문적인 의료 진단·치료를 제공하지 않습니다. 사용자가 입력한 데이터는 일체 저장되지 않으며, 실시간 처리 후 즉시 삭제됩니다. 본 서비스는 법적·의료적 책임을 지지 않으며, 사용자는 자신의 건강 상태에 대한 최종 판단은 스스로 하셔야 합니다.
+      </p>
       <form onSubmit={handleSubmit}>
         <div className="input-group">
           <label>나이</label>

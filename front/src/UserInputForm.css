@@ -67,3 +67,9 @@
   display: block;
   margin-bottom: 5px;
 }
+.disclaimer {
+  font-size: 12px; /* 작은 글씨 크기 */
+  color: #666; /* 회색 톤으로 덜 두드러지게 */
+  margin: 0 0 20px 0; /* 제목과 폼 사이 간격 조정 */
+  line-height: 1.4; /* 가독성을 위한 줄 간격 */
+}

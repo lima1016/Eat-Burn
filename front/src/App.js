@@ -102,7 +102,7 @@ function App() {
           <div className="main-content">
             <div className="card">
               <h1>
-                <strong>eteam</strong> 운동 추천🏃‍♀️‍➡️
+                <strong>e²</strong> 운동 추천🏃‍♀️‍➡️
               </h1>
               <div className="file-container">
                 <label className="custom-file-upload">
